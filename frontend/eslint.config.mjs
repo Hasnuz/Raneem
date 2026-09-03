@@ -1,0 +1,1 @@
+import tseslint from "typescript-eslint";export default [...tseslint.configs.recommended,{ignores:[".next/**","node_modules/**"]},{languageOptions:{globals:{process:"readonly",location:"readonly",fetch:"readonly",React:"readonly"}},rules:{"@typescript-eslint/no-explicit-any":"off"}}];

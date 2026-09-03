@@ -1,0 +1,23 @@
+export const defaultClientLogos = [
+  ["Abacus Accounting", "Abacus Accounting.png"],
+  ["Al Aredah Building", "Al Aredah Building.png"],
+  ["Al Dana", "AL DANA.png"],
+  ["Al Fayoum", "Al Fayoum.png"],
+  ["Ample Inspection", "Ample Inspection.png"],
+  ["BLR Paris Restaurant", "BLR Paris Rest.jpg"],
+  ["Body Time", "BODY TIME.png"],
+  ["Dubai Air Wing", "Dubai Air Wing.png"],
+  ["Edison LED Lighting", "edison+led+lighting.jpg"],
+  ["Emirates Focus", "Emirates Focus.png"],
+  ["IMC", "IMC.png"],
+  [
+    "Kalol Constructing and Demolition",
+    "Kalol Constructing and Demolition L.L.C.jpg",
+  ],
+  ["Maarib Trading", "MAARIB TRADING L.L.C.png"],
+  ["Oriri", "ORIRI.png"],
+  ["Shambarg", "shambarg l.l.c.png"],
+  ["Tea World", "Tea World.png"],
+  ["Tely Stories", "Tely Stories.png"],
+  ["Toronto", "TORONTO.png"],
+] as const;

@@ -1,0 +1,1 @@
+import tseslint from "typescript-eslint";export default [...tseslint.configs.recommended,{ignores:["dist/**","node_modules/**"]},{languageOptions:{globals:{process:"readonly",console:"readonly"}},rules:{"@typescript-eslint/no-explicit-any":"off"}}];
