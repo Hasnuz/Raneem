@@ -1,17 +1,14 @@
 import Link from "next/link";
 import { ArrowUpRight, CalendarDays } from "lucide-react";
 import { getPosts } from "@/lib/api";
+import { pageMetadata } from "@/lib/seo";
+import { enhancePost } from "@/lib/blogQuality";
 
-export const metadata = {
-  title: "UAE Business Guides",
-  description:
-    "Practical guides from Raneem about UAE company formation, visas, PRO services and document processes.",
-  alternates: { canonical: "/blog" },
-};
+export const metadata = pageMetadata({ title: "UAE Business Setup Guides & PRO Insights | Raneem", description: "Practical, reviewed guides about UAE company formation, visas, PRO services, licensing, attestation and government document processes.", path: "/blog" });
 export const dynamic = "force-dynamic";
 
 export default async function Blog() {
-  const posts = await getPosts();
+  const posts = (await getPosts()).map(enhancePost);
   return (
     <>
       <section className="bg-mist py-16 md:py-24">

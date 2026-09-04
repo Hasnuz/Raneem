@@ -7,6 +7,8 @@ import { site } from "@/lib/site";
 import { BottomCTA } from "@/components/CTAs";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { defaultSocialImage } from "@/lib/seo";
+import { enhancePost, isThinPost } from "@/lib/blogQuality";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
@@ -14,10 +16,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPost(slug);
-  if (!post) return {};
+  const rawPost = await getPost(slug);
+  if (!rawPost) return {};
+  const post = enhancePost(rawPost);
+  const image = post.featuredImage || defaultSocialImage.url;
   return {
-    title: post.seoTitle || post.title,
+    title: { absolute: post.seoTitle || `${post.title} | Raneem` },
     description: post.seoDescription || post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
@@ -26,7 +30,12 @@ export async function generateMetadata({
       description: post.excerpt,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
+      url: `${site.url}/blog/${post.slug}`,
+      siteName: site.name,
+      images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },
+    twitter: { card: "summary_large_image", title: post.title, description: post.seoDescription || post.excerpt, images: [image] },
+    robots: isThinPost(post) ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
 export default async function Article({
@@ -35,8 +44,9 @@ export default async function Article({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPost(slug);
-  if (!post) notFound();
+  const rawPost = await getPost(slug);
+  if (!rawPost) notFound();
+  const post = enhancePost(rawPost);
   const schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -46,8 +56,10 @@ export default async function Article({
     dateModified: post.updatedAt,
     author: { "@type": "Organization", name: site.name },
     publisher: { "@type": "Organization", name: site.name },
+    image: post.featuredImage || `${site.url}/opengraph-image`,
     mainEntityOfPage: `${site.url}/blog/${post.slug}`,
   };
+  const breadcrumb = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: site.url }, { "@type": "ListItem", position: 2, name: "Insights", item: `${site.url}/blog` }, { "@type": "ListItem", position: 3, name: post.title, item: `${site.url}/blog/${post.slug}` }] };
   return (
     <>
       <article>
@@ -144,6 +156,7 @@ export default async function Article({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     </>
   );
 }

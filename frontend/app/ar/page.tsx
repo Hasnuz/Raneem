@@ -2,8 +2,9 @@ import Link from "next/link";
 import { ArrowLeft, Building2, FileCheck, Landmark, Languages, Stamp, Users } from "lucide-react";
 import { services } from "@/lib/content";
 import { getGovernmentEntities } from "@/lib/api";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "رَنيم لخدمات رجال الأعمال في دبي", description: "تأسيس الشركات وخدمات المعاملات الحكومية والتأشيرات والتصديق والترجمة القانونية في دولة الإمارات.", alternates: { canonical: "/ar", languages: { en: "/", ar: "/ar" } } };
+export const metadata = pageMetadata({ title: "رَنيم لخدمات تأسيس الشركات والمعاملات في دبي", description: "تأسيس الشركات وخدمات المعاملات الحكومية والتأشيرات والتصديق والترجمة القانونية في دولة الإمارات.", path: "/ar", languages: { en: "/", ar: "/ar", "x-default": "/" } });
 const names: Record<string,string> = { "business-setup-uae":"تأسيس الشركات في الإمارات", "business-setup-dubai":"تأسيس الشركات في دبي", "mainland-company-formation":"تأسيس شركة في البر الرئيسي", "free-zone-company-formation":"تأسيس شركة في المنطقة الحرة", "pro-services-dubai":"خدمات العلاقات العامة والمعاملات الحكومية", "trade-license-renewal-dubai":"تجديد الرخصة التجارية", "uae-visa-services":"خدمات التأشيرات والإقامة", "document-attestation-dubai":"تصديق المستندات", "legal-translation-dubai":"الترجمة القانونية" };
 const icons = [Building2, Landmark, Users, Stamp, Languages, FileCheck];
 export default async function ArabicHome() {

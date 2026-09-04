@@ -2,13 +2,9 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { services as existingServices } from "@/lib/content";
 import { getServices } from "@/lib/api";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Business Services",
-  description:
-    "Explore Raneem's UAE business setup, PRO, visa, licensing and document services.",
-  alternates: { canonical: "/services" },
-};
+export const metadata = pageMetadata({ title: "UAE Business Setup, PRO & Visa Services | Raneem", description: "Explore Raneem's UAE business setup, PRO, visa, licensing, attestation and government document services in Dubai.", path: "/services", languages: { en: "/services", ar: "/ar/services", "x-default": "/services" } });
 
 export default async function ServicesPage() {
   const managed = await getServices();

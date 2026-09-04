@@ -19,6 +19,14 @@ const postSchema = z.object({
   category: z.string().trim().max(100).optional(),
   relatedServices: z.array(z.string().trim().max(160)).max(20).default([]),
 });
+function publicationQualityError(post: { title?: string | null; excerpt?: string | null; content?: string | null; status?: string | null }) {
+  if (post.status !== "published") return null;
+  const words = (post.content || "").replace(/[#*_>`\-[\]]/g, " ").trim().split(/\s+/).filter(Boolean).length;
+  if (words < 300) return "Published guides must contain at least 300 words of useful content";
+  if ((post.excerpt || "").trim().length < 70) return "Published guides need a descriptive excerpt of at least 70 characters";
+  if ((post.title || "").trim().toLowerCase() === (post.excerpt || "").trim().toLowerCase()) return "The title and excerpt must provide different information";
+  return null;
+}
 const leadStatus = z.object({
   status: z
     .enum(["New", "Contacted", "Qualified", "Converted", "Closed", "Spam"])
@@ -217,6 +225,8 @@ export async function createPost(req: Request, res: Response) {
       error: "Check the blog fields",
       fields: p.error.flatten().fieldErrors,
     });
+  const qualityError = publicationQualityError(p.data);
+  if (qualityError) return res.status(400).json({ error: qualityError });
   const post = await BlogPost.create({
     ...p.data,
     publishedAt:
@@ -233,6 +243,12 @@ export async function updatePost(req: Request, res: Response) {
       error: "Check the blog fields",
       fields: p.error.flatten().fieldErrors,
     });
+  if (p.data.status === "published") {
+    const current = await BlogPost.findById(req.params.id).lean();
+    if (!current) return res.status(404).json({ error: "Post not found" });
+    const qualityError = publicationQualityError({ ...current, ...p.data });
+    if (qualityError) return res.status(400).json({ error: qualityError });
+  }
   const update = {
     ...p.data,
     ...(p.data.status === "published"

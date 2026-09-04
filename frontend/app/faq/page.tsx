@@ -1,11 +1,8 @@
 import { services } from "@/lib/content";
-export const metadata = {
-  title: "Frequently Asked Questions",
-  description:
-    "Answers to common questions about UAE business setup, PRO, visa and document services.",
-  alternates: { canonical: "/faq" },
-};
+import { pageMetadata } from "@/lib/seo";
+export const metadata = pageMetadata({ title: "UAE Business Setup & PRO Services FAQs | Raneem", description: "Answers to common questions about UAE business setup, PRO services, visas, licensing, attestation and document services.", path: "/faq" });
 export default function FAQ() {
+  const questions = services.slice(0, 6).flatMap((service) => service.faq).map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } }));
   return (
     <>
       <section className="bg-mist py-24">
@@ -14,6 +11,7 @@ export default function FAQ() {
           <h1 className="display mt-5">Start with a practical answer.</h1>
         </div>
       </section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions }) }} />
       <section className="py-20">
         <div className="container max-w-4xl">
           {services.slice(0, 6).map((s) => (

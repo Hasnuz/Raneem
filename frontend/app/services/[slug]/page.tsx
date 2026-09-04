@@ -8,10 +8,15 @@ import { LeadForm } from "@/components/LeadForm";
 import { site } from "@/lib/site";
 import { getService } from "@/lib/api";
 import type { Service } from "@/lib/content";
+import { defaultSocialImage } from "@/lib/seo";
 
 async function findService(slug: string): Promise<Service | undefined> {
   const managed = await getService(slug);
-  if (!managed) return bySlug(slug);
+  if (!managed) {
+    const fallback = bySlug(slug);
+    return fallback ? { ...fallback, ...guidanceFor(slug) } : undefined;
+  }
+  const guidance = guidanceFor(slug);
   return {
     slug: managed.slug,
     title: managed.title,
@@ -20,19 +25,38 @@ async function findService(slug: string): Promise<Service | undefined> {
     description: managed.description,
     includes: managed.includes || [],
     audience: managed.audience || [],
-    notFor: managed.notFor || [],
-    requiredDocuments: managed.requiredDocuments || [],
-    processSteps: managed.processSteps || [],
-    costFactors: managed.costFactors || [],
-    timingFactors: managed.timingFactors || [],
-    authorities: managed.authorities || [],
-    delayCauses: managed.delayCauses || [],
+    notFor: managed.notFor?.length ? managed.notFor : guidance.notFor || [],
+    requiredDocuments: managed.requiredDocuments?.length ? managed.requiredDocuments : guidance.requiredDocuments || [],
+    processSteps: managed.processSteps?.length ? managed.processSteps : guidance.processSteps || [],
+    costFactors: managed.costFactors?.length ? managed.costFactors : guidance.costFactors || [],
+    timingFactors: managed.timingFactors?.length ? managed.timingFactors : guidance.timingFactors || [],
+    authorities: managed.authorities?.length ? managed.authorities : guidance.authorities || [],
+    delayCauses: managed.delayCauses?.length ? managed.delayCauses : guidance.delayCauses || [],
     reviewedAt: managed.reviewedAt,
     related: managed.related || [],
     faq: (managed.faqs || []).map(({ question, answer }) => ({
       q: question,
       a: answer,
     })),
+  };
+}
+
+function guidanceFor(slug: string): Partial<Service> {
+  const businessSetup = slug.includes("business-setup") || slug.includes("company-formation");
+  if (businessSetup) return {
+    requiredDocuments: ["Passport copy for each proposed shareholder and manager", "UAE visa and Emirates ID copies where applicable", "Proposed activities, trade names and ownership percentages", "Corporate shareholder documents, if a company will hold shares", "Qualifications, business plan or external approval documents for regulated activities"],
+    processSteps: ["Confirm the intended activities, owners, customer market and visa needs.", "Compare suitable mainland or free-zone routes and the complete setup obligations.", "Reserve the trade name and obtain initial or activity approval where required.", "Prepare incorporation documents and satisfy workspace or external-approval requirements.", "Pay confirmed charges, receive the licence and complete applicable post-licensing registrations."],
+    costFactors: ["Mainland or free-zone jurisdiction and selected package", "Number and type of licensed activities", "Legal form, shareholder structure and document attestations", "Workspace or facility requirements", "Visa allocation, immigration registration and external approvals"],
+    timingFactors: ["Trade-name and activity approval", "Completeness and consistency of shareholder documents", "Corporate shareholder or overseas-document processing", "Premises selection and lease registration", "Review by any sector-specific authority"],
+    authorities: ["The relevant emirate economic-development authority or selected free-zone authority", "Immigration, labour, tax, customs or sector regulators where applicable"],
+    delayCauses: ["Activity descriptions that do not match the intended business", "Expired, unclear or inconsistent identity documents", "Outstanding external approvals", "Changes to ownership, manager or premises during the application", "Late signatures or payments"],
+    notFor: ["Applicants seeking guaranteed government approval or a guaranteed completion date", "Businesses needing independent legal, tax or regulated investment advice beyond company-setup coordination"],
+  };
+  return {
+    requiredDocuments: ["Passport or Emirates ID copy, as applicable", "Existing licence, visa or transaction documents relevant to the request", "Clear supporting documents with consistent names and dates", "Any authority reference number or previous correspondence"],
+    costFactors: ["Type and number of transactions", "Official authority charges", "Translation, attestation, courier or urgent-processing requirements", "Complexity of corrections or supporting approvals"],
+    timingFactors: ["Document readiness", "Authority review and appointment availability", "External approval or verification requirements", "Public holidays and requested corrections"],
+    delayCauses: ["Missing, expired or inconsistent documents", "Unclear scans or incorrect application information", "Pending external approval", "Changes requested after submission"],
   };
 }
 export function generateStaticParams() {
@@ -48,14 +72,17 @@ export async function generateMetadata({
   const s = managed ? await findService(slug) : bySlug(slug);
   if (!s) return {};
   return {
-    title: managed?.seoTitle || s.title,
+    title: { absolute: managed?.seoTitle || `${s.title} Services in Dubai | Raneem UAE` },
     description: managed?.seoDescription || s.summary,
-    alternates: { canonical: `/services/${s.slug}` },
     openGraph: {
       title: s.title,
       description: s.summary,
       url: `/services/${s.slug}`,
+      siteName: site.name,
+      images: [defaultSocialImage],
     },
+    twitter: { card: "summary_large_image", title: s.title, description: managed?.seoDescription || s.summary, images: [defaultSocialImage.url] },
+    alternates: { canonical: `/services/${s.slug}`, languages: { en: `/services/${s.slug}`, ar: `/ar/services/${s.slug}`, "x-default": `/services/${s.slug}` } },
   };
 }
 export default async function ServicePage({
@@ -93,6 +120,7 @@ export default async function ServicePage({
     provider: { "@type": "Organization", name: site.name, url: site.url },
     areaServed: { "@type": "Country", name: "United Arab Emirates" },
   };
+  const faqSchema = s.faq.length ? { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: s.faq.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })) } : null;
   return (
     <>
       <section className="bg-ink py-14 text-white md:py-20">
@@ -239,6 +267,7 @@ export default async function ServicePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(crumb) }}

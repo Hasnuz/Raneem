@@ -1,10 +1,6 @@
 import { BottomCTA } from "@/components/CTAs";
-export const metadata = {
-  title: "About Raneem Businessmen Services",
-  description:
-    "Meet the Dubai team supporting companies and individuals with UAE business, government and document services since 2001.",
-  alternates: { canonical: "/about" },
-};
+import { pageMetadata } from "@/lib/seo";
+export const metadata = pageMetadata({ title: "About Raneem Businessmen Services | Dubai UAE", description: "Meet the Dubai team supporting companies and individuals with UAE business setup, government transactions and document services since 2001.", path: "/about" });
 export default function About() {
   return (
     <>

@@ -1,11 +1,7 @@
 import { LeadForm } from "@/components/LeadForm";
 import { site, waLink } from "@/lib/site";
-export const metadata = {
-  title: "Contact Raneem in Dubai",
-  description:
-    "Contact Raneem Businessmen Services in Al Qusais 2, Dubai for a free consultation.",
-  alternates: { canonical: "/contact" },
-};
+import { pageMetadata } from "@/lib/seo";
+export const metadata = pageMetadata({ title: "Contact Raneem Businessmen Services in Dubai", description: "Contact Raneem in Al Qusais 2, Dubai for a consultation about UAE business setup, PRO services, visas or document processing.", path: "/contact" });
 export default function Contact() {
   return (
     <>

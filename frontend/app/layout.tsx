@@ -10,18 +10,19 @@ import { getPublicSettings } from "@/lib/api";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { headers } from "next/headers";
+import { defaultSocialImage } from "@/lib/seo";
 const font = Manrope({ subsets: ["latin"], display: "swap" });
 const defaultMetadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "Raneem Businessmen Services | Dubai, UAE",
+    default: "Dubai Business Setup & PRO Services | Raneem UAE",
     template: "%s | Raneem",
   },
   description:
     "Dubai business setup, PRO, visa, government transaction, document attestation and legal translation support.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: site.name, locale: "en_AE" },
-  twitter: { card: "summary_large_image" },
+  openGraph: { type: "website", siteName: site.name, locale: "en_AE", title: "Dubai Business Setup & PRO Services | Raneem UAE", description: "Dubai business setup, PRO, visa, government transaction, document attestation and legal translation support.", url: site.url, images: [defaultSocialImage] },
+  twitter: { card: "summary_large_image", images: [defaultSocialImage.url] },
 };
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getPublicSettings();
@@ -29,10 +30,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ...defaultMetadata,
     title: settings.siteTitle || defaultMetadata.title,
     description: settings.siteDescription || defaultMetadata.description,
+    alternates: { canonical: "/", languages: { en: "/", ar: "/ar", "x-default": "/" } },
     openGraph: {
       ...defaultMetadata.openGraph,
-      images: settings.ogImage ? [settings.ogImage] : undefined,
+      images: settings.ogImage ? [settings.ogImage] : [defaultSocialImage],
     },
+    twitter: { ...defaultMetadata.twitter, images: settings.ogImage ? [settings.ogImage] : [defaultSocialImage.url] },
   };
 }
 export default async function RootLayout({
@@ -44,10 +47,14 @@ export default async function RootLayout({
   const schema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
+    "@id": `${site.url}/#business`,
     name: site.name,
     url: site.url,
     telephone: site.phone,
     email: site.email,
+    logo: `${site.url}/images/raneem-logo.png`,
+    image: `${site.url}/opengraph-image`,
+    priceRange: "Contact for a case-specific quotation",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Office 3, Sultan Lootah Building, Al Qusais 2",
