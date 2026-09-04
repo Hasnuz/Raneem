@@ -1,7 +1,7 @@
 export const site = {
   name: "Raneem Businessmen Services",
   shortName: "Raneem",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.raneembms.com",
+  url: "https://raneembms.com",
   phoneDisplay: "+971 50 951 5270",
   phone: "+971509515270",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "971509515270",
