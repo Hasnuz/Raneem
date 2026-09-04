@@ -71,18 +71,28 @@ export async function generateMetadata({
   const managed = await getService(slug);
   const s = managed ? await findService(slug) : bySlug(slug);
   if (!s) return {};
+  const title = managed?.seoTitle || `${s.title} Services in Dubai | Raneem UAE`;
+  const description = managed?.seoDescription || s.summary;
+  const url = `${site.url}/services/${s.slug}`;
   return {
-    title: { absolute: managed?.seoTitle || `${s.title} Services in Dubai | Raneem UAE` },
-    description: managed?.seoDescription || s.summary,
+    title: { absolute: title },
+    description,
     openGraph: {
-      title: s.title,
-      description: s.summary,
-      url: `/services/${s.slug}`,
+      title,
+      description,
+      url,
       siteName: site.name,
       images: [defaultSocialImage],
     },
-    twitter: { card: "summary_large_image", title: s.title, description: managed?.seoDescription || s.summary, images: [defaultSocialImage.url] },
-    alternates: { canonical: `/services/${s.slug}`, languages: { en: `/services/${s.slug}`, ar: `/ar/services/${s.slug}`, "x-default": `/services/${s.slug}` } },
+    twitter: { card: "summary_large_image", title, description, images: [defaultSocialImage.url] },
+    alternates: {
+      canonical: url,
+      languages: {
+        en: url,
+        ar: `${site.url}/ar/services/${s.slug}`,
+        "x-default": url,
+      },
+    },
   };
 }
 export default async function ServicePage({

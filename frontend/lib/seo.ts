@@ -22,10 +22,18 @@ export function pageMetadata({
   type?: "website" | "article";
 }): Metadata {
   const url = new URL(path, site.url).toString();
+  const absoluteLanguages = languages
+    ? Object.fromEntries(
+        Object.entries(languages).map(([language, href]) => [
+          language,
+          new URL(href, site.url).toString(),
+        ]),
+      )
+    : undefined;
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: path, languages },
+    alternates: { canonical: url, languages: absoluteLanguages },
     openGraph: {
       type,
       title,

@@ -20,17 +20,18 @@ export async function generateMetadata({
   if (!rawPost) return {};
   const post = enhancePost(rawPost);
   const image = post.featuredImage || defaultSocialImage.url;
+  const url = `${site.url}/blog/${post.slug}`;
   return {
     title: { absolute: post.seoTitle || `${post.title} | Raneem` },
     description: post.seoDescription || post.excerpt,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: { canonical: url },
     openGraph: {
       type: "article",
       title: post.title,
       description: post.excerpt,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
-      url: `${site.url}/blog/${post.slug}`,
+      url,
       siteName: site.name,
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },

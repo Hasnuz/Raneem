@@ -20,7 +20,7 @@ const defaultMetadata: Metadata = {
   },
   description:
     "Dubai business setup, PRO, visa, government transaction, document attestation and legal translation support.",
-  alternates: { canonical: "/" },
+  alternates: { canonical: site.url },
   openGraph: { type: "website", siteName: site.name, locale: "en_AE", title: "Dubai Business Setup & PRO Services | Raneem UAE", description: "Dubai business setup, PRO, visa, government transaction, document attestation and legal translation support.", url: site.url, images: [defaultSocialImage] },
   twitter: { card: "summary_large_image", images: [defaultSocialImage.url] },
 };
@@ -30,7 +30,14 @@ export async function generateMetadata(): Promise<Metadata> {
     ...defaultMetadata,
     title: settings.siteTitle || defaultMetadata.title,
     description: settings.siteDescription || defaultMetadata.description,
-    alternates: { canonical: "/", languages: { en: "/", ar: "/ar", "x-default": "/" } },
+    alternates: {
+      canonical: site.url,
+      languages: {
+        en: site.url,
+        ar: `${site.url}/ar`,
+        "x-default": site.url,
+      },
+    },
     openGraph: {
       ...defaultMetadata.openGraph,
       images: settings.ogImage ? [settings.ogImage] : [defaultSocialImage],
