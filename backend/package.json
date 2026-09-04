@@ -9,7 +9,8 @@
     "lint": "eslint src --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "create-admin": "tsx src/scripts/createAdmin.ts",
-    "test-email": "tsx src/scripts/testEmail.ts"
+    "test-email": "tsx src/scripts/testEmail.ts",
+    "seed-blogs": "tsx src/scripts/seedBlogs.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
