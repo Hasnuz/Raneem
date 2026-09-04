@@ -8,9 +8,17 @@ export const app = express();
 app.disable("x-powered-by");
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
-const configuredOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
-  .split(",")
-  .map((origin) => origin.trim())
+const productionOrigins = [
+  "https://raneembms.com",
+  "https://www.raneembms.com",
+  "https://raneem-frontend.vercel.app",
+];
+
+const configuredOrigins = [
+  ...(process.env.CORS_ORIGIN || "http://localhost:3000").split(","),
+  ...productionOrigins,
+]
+  .map((origin) => origin.trim().replace(/^['"]|['"]$/g, "").replace(/\/$/, ""))
   .filter(Boolean);
 
 const isDevelopmentOrigin = (origin: string) => {
