@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -13,24 +12,23 @@ declare global {
   }
 }
 
-function GooglePageView({ ready }: { ready: boolean }) {
+function GooglePageView({ enabled }: { enabled: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!ready || !window.gtag) return;
+    if (!enabled || !window.gtag) return;
     const query = searchParams.toString();
     window.gtag("config", measurementId, {
       page_path: query ? `${pathname}?${query}` : pathname,
     });
-  }, [pathname, ready, searchParams]);
+  }, [enabled, pathname, searchParams]);
 
   return null;
 }
 
 export function GoogleAnalytics() {
   const [enabled, setEnabled] = useState(false);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const syncConsent = (event?: Event) => {
@@ -38,7 +36,11 @@ export function GoogleAnalytics() {
         event instanceof CustomEvent
           ? event.detail
           : localStorage.getItem("raneem_consent");
-      if (choice === "accepted") setEnabled(true);
+      const accepted = choice === "accepted";
+      window.gtag?.("consent", "update", {
+        analytics_storage: accepted ? "granted" : "denied",
+      });
+      setEnabled(accepted);
     };
 
     syncConsent();
@@ -46,30 +48,9 @@ export function GoogleAnalytics() {
     return () => window.removeEventListener("raneem-consent", syncConsent);
   }, []);
 
-  if (!enabled) return null;
-
-  const initialize = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.gtag =
-      window.gtag ||
-      function gtag(...args: unknown[]) {
-        window.dataLayer.push(args);
-      };
-    window.gtag("js", new Date());
-    setReady(true);
-  };
-
   return (
-    <>
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
-        strategy="afterInteractive"
-        onLoad={initialize}
-        onReady={initialize}
-      />
-      <Suspense fallback={null}>
-        <GooglePageView ready={ready} />
-      </Suspense>
-    </>
+    <Suspense fallback={null}>
+      <GooglePageView enabled={enabled} />
+    </Suspense>
   );
 }
