@@ -9,6 +9,7 @@ import { site } from "@/lib/site";
 import { getPublicSettings } from "@/lib/api";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { ConsentBanner } from "@/components/ConsentBanner";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { headers } from "next/headers";
 import { defaultSocialImage } from "@/lib/seo";
 const font = Manrope({ subsets: ["latin"], display: "swap" });
@@ -72,6 +73,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} data-scroll-behavior="smooth">
       <body className={font.className}>
+        <GoogleAnalytics />
         <AnalyticsTracker />
         <a
           href="#main"
