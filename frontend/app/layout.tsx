@@ -10,6 +10,7 @@ import { getPublicSettings } from "@/lib/api";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { SiteMotion } from "@/components/SiteMotion";
 import { headers } from "next/headers";
 import { defaultSocialImage } from "@/lib/seo";
 const font = Manrope({ subsets: ["latin"], display: "swap" });
@@ -97,6 +98,7 @@ gtag('config', 'G-NRZZFRKDT9', { send_page_view: false });`,
       <body className={font.className}>
         <GoogleAnalytics />
         <AnalyticsTracker />
+        <SiteMotion />
         <a
           href="#main"
           className="fixed left-2 top-2 z-[100] -translate-y-20 bg-white p-3 focus:translate-y-0"

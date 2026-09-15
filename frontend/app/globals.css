@@ -17,6 +17,16 @@ body {
   color: var(--ink);
   background: #fff;
 }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 18%, rgb(181 138 72 / 0.055), transparent 24rem),
+    radial-gradient(circle at 92% 72%, rgb(23 78 166 / 0.045), transparent 28rem);
+}
 ::selection {
   background: #dce8f8;
 }
@@ -46,6 +56,87 @@ a {
 .focus-ring:focus-visible {
   outline: 3px solid #b58a48;
   outline-offset: 3px;
+}
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+[data-reveal][data-reveal-state="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hero-media {
+  animation: hero-image-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+.hero-shade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.11) 50%, transparent 65%);
+  transform: translateX(-110%);
+  animation: hero-light-sweep 1.4s 0.5s ease-out both;
+}
+.hero-kicker,
+.hero-title,
+.hero-copy,
+.hero-actions {
+  opacity: 0;
+  animation: hero-copy-in 760ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-kicker { animation-delay: 120ms; }
+.hero-title { animation-delay: 230ms; }
+.hero-copy { animation-delay: 350ms; }
+.hero-actions { animation-delay: 470ms; }
+.hero-actions a {
+  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+.hero-actions a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.2);
+}
+main article,
+main figure {
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 280ms ease, border-color 280ms ease;
+}
+main article:hover,
+main figure:hover {
+  transform: translateY(-4px);
+}
+main article[data-reveal-state="visible"]:hover,
+main figure[data-reveal-state="visible"]:hover {
+  transform: translateY(-4px);
+}
+main a svg {
+  transition: transform 220ms ease;
+}
+main a:hover svg {
+  transform: translate(2px, -2px);
+}
+header {
+  transition: box-shadow 250ms ease, background-color 250ms ease;
+  animation: header-in 520ms ease-out both;
+}
+header:hover {
+  box-shadow: 0 12px 35px rgb(7 21 38 / 0.08);
+}
+@keyframes hero-image-in {
+  from { opacity: 0.35; transform: scale(1.08); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes hero-copy-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-light-sweep {
+  to { transform: translateX(110%); }
+}
+@keyframes header-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .partner-marquee {
   width: 100%;
@@ -109,6 +200,14 @@ a {
   }
   .partner-marquee-track {
     animation: none;
+  }
+  [data-reveal],
+  .hero-kicker,
+  .hero-title,
+  .hero-copy,
+  .hero-actions {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 .blog-content > * + * {

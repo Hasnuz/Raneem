@@ -53,28 +53,28 @@ export default async function Home() {
 
   return (
     <>
-      <section className="relative min-h-[620px] overflow-hidden bg-ink text-white md:min-h-[720px]">
+      <section className="hero-stage relative min-h-[620px] overflow-hidden bg-ink text-white md:min-h-[720px]">
         <Image
           src="/images/dubai-business-hero-v2.png"
           alt="Dubai skyline viewed from a contemporary business office"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[68%_center] md:object-center"
+          className="hero-media object-cover object-[68%_center] md:object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/10" />
+        <div className="hero-shade absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/10" />
         <div className="container relative flex min-h-[620px] items-center py-16 md:min-h-[720px] md:py-24">
-          <div className="max-w-3xl">
-            <p className="eyebrow">BUSINESS SERVICES · DUBAI · UAE</p>
-            <h1 className="display mt-5">
+          <div className="hero-content max-w-3xl">
+            <p className="hero-kicker eyebrow">BUSINESS SERVICES · DUBAI · UAE</p>
+            <h1 className="hero-title display mt-5">
               Business setup and PRO services, handled with clarity.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-200 md:mt-7 md:text-lg md:leading-8">
+            <p className="hero-copy mt-6 max-w-2xl text-base leading-7 text-slate-200 md:mt-7 md:text-lg md:leading-8">
               Raneem supports entrepreneurs, companies, HR teams and individuals
               with UAE company formation, visas, government transactions,
               licensing, attestation and document services.
             </p>
-            <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap">
+            <div className="hero-actions mt-8 grid gap-3 sm:flex sm:flex-wrap">
               <Link
                 href="/contact"
                 className="rounded-full bg-white px-6 py-3.5 text-center font-bold text-navy"
